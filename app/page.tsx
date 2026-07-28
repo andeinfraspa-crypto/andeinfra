@@ -245,12 +245,12 @@ export default function Page() {
       <header className="sticky top-0 z-50 bg-[#142026]/95 backdrop-blur-md border-b border-[#2C4A57]/40 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Corporate Brand Logo oficial desde Brandbook */}
-          <a href="#" className="flex items-center group">
+          {/* Corporate Brand Logo oficial desde Brandbook (LIGERAMENTE MÁS GRANDE Y DESTACADO) */}
+          <a href="#" className="flex items-center group py-2">
             <img 
               src="/logo.png" 
               alt="AndeInfra - Ingeniería y Servicios" 
-              className="h-10 sm:h-12 w-auto object-contain py-1"
+              className="h-12 sm:h-14 lg:h-16 w-auto object-contain"
             />
           </a>
 
@@ -1078,13 +1078,13 @@ export default function Page() {
             
             <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#2C4A57] items-center">
               
-              {/* Left Column: Corporate Brand Logo + Subtitle */}
-              <div className="md:col-span-6 space-y-4">
+              {/* Left Column: Corporate Brand Logo MUCHO MÁS GRANDE + Subtitle */}
+              <div className="md:col-span-6 space-y-5">
                 <a href="#" className="inline-block">
                   <img 
                     src="/logo.png" 
                     alt="AndeInfra - Ingeniería y Servicios" 
-                    className="h-12 sm:h-14 w-auto object-contain"
+                    className="h-20 sm:h-24 lg:h-28 w-auto object-contain"
                   />
                 </a>
 
