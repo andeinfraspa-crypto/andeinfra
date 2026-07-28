@@ -58,7 +58,6 @@ export default function Page() {
     setErrorMessage('');
 
     const formData = new FormData();
-    // ⚠️ REEMPLAZAR 'TU_ACCESS_KEY_AQUI' POR TU KEY DE WEB3FORMS
     formData.append('access_key', '4ef05de7-60b6-45c1-8d74-3a8a10005d33'); 
     formData.append('subject', `Nueva Solicitud de Cotización: ${frente}`);
     formData.append('from_name', 'Web AndeInfra');
@@ -246,19 +245,13 @@ export default function Page() {
       <header className="sticky top-0 z-50 bg-[#142026]/95 backdrop-blur-md border-b border-[#2C4A57]/40 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Corporate Brand Logo */}
-          <a href="#" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-[#B96A37] border border-[#ECE5D9]/20 flex items-center justify-center font-heading font-extrabold text-white text-xl tracking-tighter shadow-md group-hover:bg-[#2C4A57] transition-colors">
-              AI
-            </div>
-            <div className="flex flex-col">
-              <span className="font-heading font-extrabold tracking-wider text-xl sm:text-2xl text-white leading-none group-hover:text-[#ECE5D9] transition-colors">
-                ANDEINFRA
-              </span>
-              <span className="text-[10px] font-mono-tech tracking-widest text-[#B96A37] uppercase mt-0.5 font-semibold">
-                INGENIERÍA Y SERVICIOS
-              </span>
-            </div>
+          {/* Corporate Brand Logo oficial desde Brandbook */}
+          <a href="#" className="flex items-center group">
+            <img 
+              src="/logo.png" 
+              alt="AndeInfra - Ingeniería y Servicios" 
+              className="h-10 sm:h-12 w-auto object-contain py-1"
+            />
           </a>
 
           {/* Navigation Links Desktop */}
@@ -1085,21 +1078,15 @@ export default function Page() {
             
             <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#2C4A57] items-center">
               
-              {/* Left Column: Brand Logo + Subtitle */}
+              {/* Left Column: Corporate Brand Logo + Subtitle */}
               <div className="md:col-span-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-[#B96A37] flex items-center justify-center font-heading font-extrabold text-white text-2xl border border-[#ECE5D9]/20">
-                    AI
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-extrabold text-2xl text-white leading-none">
-                      ANDEINFRA
-                    </h3>
-                    <p className="text-xs font-mono-tech text-[#B96A37] tracking-widest uppercase mt-1 font-semibold">
-                      INGENIERÍA Y SERVICIOS
-                    </p>
-                  </div>
-                </div>
+                <a href="#" className="inline-block">
+                  <img 
+                    src="/logo.png" 
+                    alt="AndeInfra - Ingeniería y Servicios" 
+                    className="h-12 sm:h-14 w-auto object-contain"
+                  />
+                </a>
 
                 <p className="text-sm text-[#ECE5D9]/80 max-w-md leading-relaxed">
                   Contratista formal y socio operativo para proyectos de infraestructura, minería, industria y servicios generales en la Región de Coquimbo y macrozona norte.
