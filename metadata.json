@@ -1,0 +1,6 @@
+{
+  "name": "AndeInfra - Ingeniería y Servicios",
+  "description": "Sitio corporativo industrial de Inversiones AndeInfra SpA - Obras civiles, minería, servicios generales y logística en la Región de Coquimbo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

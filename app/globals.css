@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Saira:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --graphite: #142026;
+  --steel: #2C4A57;
+  --copper: #B96A37;
+  --sand: #ECE5D9;
+  --white: #FFFFFF;
+}
+
+@layer utilities {
+  .font-heading {
+    font-family: 'Saira', sans-serif;
+  }
+  .font-mono-tech {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Technical CAD Grid */
+.technical-grid {
+  background-image: linear-gradient(rgba(44, 74, 87, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(44, 74, 87, 0.12) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Custom technical background patterns */
+.bg-cad-grid {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-cad-grid-dark {
+  background-image: linear-gradient(to right, rgba(44, 74, 87, 0.2) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(44, 74, 87, 0.2) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.bg-cad-grid-arena {
+  background-image: linear-gradient(to right, rgba(20, 32, 38, 0.06) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(20, 32, 38, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Topographic contour overlay line styling */
+.topo-lines {
+  background-image: radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(185, 106, 55, 0.08) 100%),
+                    repeating-radial-gradient(circle at 30% 20%, transparent 0, transparent 25px, rgba(44, 74, 87, 0.15) 26px, transparent 27px),
+                    repeating-radial-gradient(circle at 80% 70%, transparent 0, transparent 40px, rgba(185, 106, 55, 0.12) 41px, transparent 42px);
+}
+
+/* Technical dimension corner ticks */
+.tech-corner-box {
+  position: relative;
+}
+
+.tech-corner-box::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #B96A37;
+  border-left: 2px solid #B96A37;
+}
+
+.tech-corner-box::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid #B96A37;
+  border-right: 2px solid #B96A37;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #142026;
+}
+::-webkit-scrollbar-thumb {
+  background: #2C4A57;
+  border: 1px solid #B96A37;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B96A37;
+}
