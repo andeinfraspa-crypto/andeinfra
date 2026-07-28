@@ -59,7 +59,7 @@ export default function Page() {
 
     const formData = new FormData();
     // ⚠️ REEMPLAZAR 'TU_ACCESS_KEY_AQUI' POR TU KEY DE WEB3FORMS
-    formData.append('access_key', 'TU_ACCESS_KEY_AQUI'); 
+    formData.append('access_key', '4ef05de7-60b6-45c1-8d74-3a8a10005d33'); 
     formData.append('subject', `Nueva Solicitud de Cotización: ${frente}`);
     formData.append('from_name', 'Web AndeInfra');
 
