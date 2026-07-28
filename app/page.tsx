@@ -17,7 +17,7 @@ import {
   Menu,
   X,
   Pickaxe,
-  ExternalLink
+  Loader2
 } from 'lucide-react';
 
 export default function Page() {
@@ -27,7 +27,13 @@ export default function Page() {
   const [frente, setFrente] = useState('Obras Civiles e Infraestructura');
   const [ubicacion, setUbicacion] = useState('La Serena - Coquimbo');
   const [plazo, setPlazo] = useState('Inmediato (< 15 días)');
+  const [contactoCliente, setContactoCliente] = useState('');
   const [observaciones, setObservaciones] = useState('');
+
+  // Web3Forms Form Submission States
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Scroll to estimator section & pre-select frente
   const handleCotizarFrente = (frenteTitle: string) => {
@@ -45,16 +51,50 @@ export default function Page() {
     }
   };
 
-  // Generate Mailto URL for Primary Orange/Copper button
-  const getMailtoUrl = () => {
-    const subject = 'Solicitud de Cotización Web - AndeInfra';
-    const body = `Hola AndeInfra,\n\nSolicito información/cotización con los siguientes parámetros:\n\n- Frente Principal: ${frente}\n- Ubicación de Obra/Faena: ${ubicacion}\n- Plazo Estimado: ${plazo}\n- Observaciones: ${observaciones.trim() || 'Sin observaciones'}\n\nQuedo a la espera de su contacto.\nSaludos.`;
-    return `mailto:contacto@andeinfra.cl?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // Web3Forms API Handler (Enviar en segundo plano)
+  const handleWeb3FormsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage('');
+
+    const formData = new FormData();
+    // ⚠️ REEMPLAZAR 'TU_ACCESS_KEY_AQUI' POR TU KEY DE WEB3FORMS
+    formData.append('access_key', 'TU_ACCESS_KEY_AQUI'); 
+    formData.append('subject', `Nueva Solicitud de Cotización: ${frente}`);
+    formData.append('from_name', 'Web AndeInfra');
+
+    // Campos formateados para el correo
+    formData.append('Frente Principal', frente);
+    formData.append('Ubicación de Obra', ubicacion);
+    formData.append('Plazo Estimado', plazo);
+    formData.append('Contacto (Email/Teléfono)', contactoCliente || 'No especificado');
+    formData.append('Observaciones', observaciones.trim() || 'Sin observaciones');
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsSubmitted(true);
+        setObservaciones('');
+        setContactoCliente('');
+      } else {
+        setErrorMessage('Ocurrió un error al enviar el formulario. Por favor intenta por WhatsApp.');
+      }
+    } catch (error) {
+      setErrorMessage('Error de conexión. Revisa tu internet o contáctanos directamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Generate WhatsApp URL for Secondary Dark button
   const getWhatsAppUrl = () => {
-    const text = `Hola AndeInfra, quiero solicitar información/cotización:\n- *Frente:* ${frente}\n- *Ubicación:* ${ubicacion}\n- *Plazo:* ${plazo}\n- *Observaciones:* ${observaciones.trim() || 'Sin observaciones'}`;
+    const text = `Hola AndeInfra, quiero solicitar información/cotización:\n- *Frente:* ${frente}\n- *Ubicación:* ${ubicacion}\n- *Plazo:* ${plazo}\n- *Contacto:* ${contactoCliente || 'No especificado'}\n- *Observaciones:* ${observaciones.trim() || 'Sin observaciones'}`;
     return `https://wa.me/56976563636?text=${encodeURIComponent(text)}`;
   };
 
@@ -888,91 +928,149 @@ export default function Page() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                
-                <div>
-                  <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                    1. Frente Principal:
-                  </label>
-                  <select
-                    value={frente}
-                    onChange={(e) => setFrente(e.target.value)}
-                    className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
+              {isSubmitted ? (
+                /* Mensaje de éxito al enviar */
+                <div className="bg-[#142026] border-2 border-emerald-500 p-8 text-center space-y-4 animate-fade-in">
+                  <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center rounded-full border border-emerald-500">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <h4 className="font-heading font-bold text-xl text-white">
+                    ¡Solicitud Recibida Con Éxito!
+                  </h4>
+                  <p className="text-xs text-[#ECE5D9]/80 max-w-md mx-auto leading-relaxed">
+                    Hemos enviado los detalles de tu requerimiento directamente a nuestra bandeja de ingeniería (<span className="text-[#B96A37]">contacto@andeinfra.cl</span>). Te responderemos a la brevedad.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsSubmitted(false)}
+                    className="inline-block mt-4 bg-[#2C4A57] hover:bg-[#385e6f] text-white text-xs font-mono-tech px-6 py-2.5 transition-colors border border-[#2C4A57]"
                   >
-                    <option value="Obras Civiles e Infraestructura">Obras Civiles e Infraestructura</option>
-                    <option value="Minería e Industria">Minería e Industria</option>
-                    <option value="Servicios Generales y Operación">Servicios Generales y Operación</option>
-                    <option value="Maquinaria y Logística">Maquinaria y Logística</option>
-                  </select>
+                    Enviar otra consulta
+                  </button>
                 </div>
+              ) : (
+                /* Formulario Web3Forms */
+                <form onSubmit={handleWeb3FormsSubmit} className="space-y-6">
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        1. Frente Principal:
+                      </label>
+                      <select
+                        value={frente}
+                        onChange={(e) => setFrente(e.target.value)}
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
+                      >
+                        <option value="Obras Civiles e Infraestructura">Obras Civiles e Infraestructura</option>
+                        <option value="Minería e Industria">Minería e Industria</option>
+                        <option value="Servicios Generales y Operación">Servicios Generales y Operación</option>
+                        <option value="Maquinaria y Logística">Maquinaria y Logística</option>
+                      </select>
+                    </div>
 
-                <div>
-                  <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                    2. Ubicación:
-                  </label>
-                  <select
-                    value={ubicacion}
-                    onChange={(e) => setUbicacion(e.target.value)}
-                    className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
-                  >
-                    <option value="La Serena - Coquimbo">La Serena - Coquimbo</option>
-                    <option value="Otras comunas Coquimbo">Otras comunas Coquimbo</option>
-                    <option value="Fuera de Región">Fuera de Región</option>
-                  </select>
-                </div>
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        2. Ubicación:
+                      </label>
+                      <select
+                        value={ubicacion}
+                        onChange={(e) => setUbicacion(e.target.value)}
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
+                      >
+                        <option value="La Serena - Coquimbo">La Serena - Coquimbo</option>
+                        <option value="Otras comunas Coquimbo">Otras comunas Coquimbo</option>
+                        <option value="Fuera de Región">Fuera de Región</option>
+                      </select>
+                    </div>
 
-                <div>
-                  <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                    3. Plazo Estimado:
-                  </label>
-                  <select
-                    value={plazo}
-                    onChange={(e) => setPlazo(e.target.value)}
-                    className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
-                  >
-                    <option value="Inmediato (< 15 días)">Inmediato (&lt; 15 días)</option>
-                    <option value="30 días">30 días</option>
-                    <option value="Licitación a plazo">Licitación a plazo</option>
-                  </select>
-                </div>
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        3. Plazo Estimado:
+                      </label>
+                      <select
+                        value={plazo}
+                        onChange={(e) => setPlazo(e.target.value)}
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
+                      >
+                        <option value="Inmediato (< 15 días)">Inmediato (&lt; 15 días)</option>
+                        <option value="30 días">30 días</option>
+                        <option value="Licitación a plazo">Licitación a plazo</option>
+                      </select>
+                    </div>
 
-              </div>
+                  </div>
 
-              <div className="mb-6">
-                <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                  4. Observaciones (Opcional):
-                </label>
-                <textarea
-                  rows={3}
-                  value={observaciones}
-                  onChange={(e) => setObservaciones(e.target.value)}
-                  placeholder="Ej: Requerimos movimiento de tierras para 5.000 m3 y montaje de galpón en terreno..."
-                  className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
-                />
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        4. Tu Email o Teléfono (Opcional):
+                      </label>
+                      <input
+                        type="text"
+                        value={contactoCliente}
+                        onChange={(e) => setContactoCliente(e.target.value)}
+                        placeholder="Ej: nombre@empresa.cl o +56 9 1234 5678"
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
+                      />
+                    </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                {/* 1. Primary Orange/Copper Button: Email Mailto */}
-                <a
-                  href={getMailtoUrl()}
-                  className="bg-[#B96A37] hover:bg-[#a35b2e] text-white px-8 py-4 font-heading font-bold text-sm tracking-wide flex items-center justify-center gap-3 transition-all border border-[#B96A37]/50 shadow-lg w-full sm:w-auto"
-                >
-                  <Mail className="w-5 h-5 text-white" />
-                  <span>Solicitar Asesoría / Cotización</span>
-                  <ArrowRight className="w-4 h-4" />
-                </a>
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        5. Observaciones (Opcional):
+                      </label>
+                      <input
+                        type="text"
+                        value={observaciones}
+                        onChange={(e) => setObservaciones(e.target.value)}
+                        placeholder="Ej: Requerimos movimiento de tierras para 5.000 m3..."
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
+                      />
+                    </div>
+                  </div>
 
-                {/* 2. Secondary Black/Dark Button: WhatsApp */}
-                <a
-                  href={getWhatsAppUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#142026] hover:bg-[#1f303a] text-[#ECE5D9] px-8 py-4 font-heading font-semibold text-sm tracking-wide flex items-center justify-center gap-3 transition-all border border-[#2C4A57] w-full sm:w-auto"
-                >
-                  <Phone className="w-5 h-5 text-[#B96A37] fill-current" />
-                  <span>Hablemos Ahora</span>
-                </a>
-              </div>
+                  {errorMessage && (
+                    <div className="bg-red-500/20 border border-red-500 text-red-300 text-xs p-3 text-center font-mono-tech">
+                      {errorMessage}
+                    </div>
+                  )}
+
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
+                    {/* 1. Primary Orange/Copper Button: Web3Forms Submit */}
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="bg-[#B96A37] hover:bg-[#a35b2e] disabled:opacity-50 text-white px-8 py-4 font-heading font-bold text-sm tracking-wide flex items-center justify-center gap-3 transition-all border border-[#B96A37]/50 shadow-lg w-full sm:w-auto cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 text-white animate-spin" />
+                          <span>Enviando Requerimiento...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-5 h-5 text-white" />
+                          <span>Solicitar Asesoría / Cotización</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+
+                    {/* 2. Secondary Black/Dark Button: WhatsApp Direct */}
+                    <a
+                      href={getWhatsAppUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-[#142026] hover:bg-[#1f303a] text-[#ECE5D9] px-8 py-4 font-heading font-semibold text-sm tracking-wide flex items-center justify-center gap-3 transition-all border border-[#2C4A57] w-full sm:w-auto"
+                    >
+                      <Phone className="w-5 h-5 text-[#B96A37] fill-current" />
+                      <span>Hablemos Ahora</span>
+                    </a>
+                  </div>
+
+                </form>
+              )}
 
             </div>
           </div>
