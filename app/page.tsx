@@ -23,19 +23,19 @@ import {
 export default function Page() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // State for "Estimador de Requerimientos Técnicos"
-  const [frente, setFrente] = useState('Obras Civiles e Infraestructura');
-  const [ubicacion, setUbicacion] = useState('La Serena - Coquimbo');
-  const [plazo, setPlazo] = useState('Inmediato (< 15 días)');
+  // Estados del Formulario de Contacto
+  const [nombre, setNombre] = useState('');
+  const [empresa, setEmpresa] = useState('');
   const [contactoCliente, setContactoCliente] = useState('');
-  const [observaciones, setObservaciones] = useState('');
+  const [frente, setFrente] = useState('Obras Civiles e Infraestructura');
+  const [mensaje, setMensaje] = useState('');
 
-  // Web3Forms Form Submission States
+  // Estados de envío Web3Forms
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Scroll to estimator section & pre-select frente
+  // Scroll a la sección del estimador y preseleccionar frente
   const handleCotizarFrente = (frenteTitle: string) => {
     setFrente(frenteTitle);
     const element = document.getElementById('estimador');
@@ -51,7 +51,7 @@ export default function Page() {
     }
   };
 
-  // Web3Forms API Handler (Enviar en segundo plano)
+  // Handler de envío por Web3Forms
   const handleWeb3FormsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -59,15 +59,15 @@ export default function Page() {
 
     const formData = new FormData();
     formData.append('access_key', '4ef05de7-60b6-45c1-8d74-3a8a10005d33'); 
-    formData.append('subject', `Nueva Solicitud de Cotización: ${frente}`);
+    formData.append('subject', `Nueva Consulta Web: ${nombre} - ${frente}`);
     formData.append('from_name', 'Web AndeInfra');
 
-    // Campos formateados para el correo
-    formData.append('Frente Principal', frente);
-    formData.append('Ubicación de Obra', ubicacion);
-    formData.append('Plazo Estimado', plazo);
-    formData.append('Contacto (Email/Teléfono)', contactoCliente || 'No especificado');
-    formData.append('Observaciones', observaciones.trim() || 'Sin observaciones');
+    // Nombres de campos limpios para el correo
+    formData.append('Nombre', nombre);
+    formData.append('Empresa', empresa || 'No especificada');
+    formData.append('Contacto (Email o Teléfono)', contactoCliente);
+    formData.append('Frente de Proyecto', frente);
+    formData.append('Detalles del Proyecto', mensaje || 'Sin detalles adicionales');
 
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
@@ -79,8 +79,10 @@ export default function Page() {
 
       if (data.success) {
         setIsSubmitted(true);
-        setObservaciones('');
+        setNombre('');
+        setEmpresa('');
         setContactoCliente('');
+        setMensaje('');
       } else {
         setErrorMessage('Ocurrió un error al enviar el formulario. Por favor intenta por WhatsApp.');
       }
@@ -91,9 +93,9 @@ export default function Page() {
     }
   };
 
-  // Generate WhatsApp URL for Secondary Dark button
+  // Generador de URL de WhatsApp
   const getWhatsAppUrl = () => {
-    const text = `Hola AndeInfra, quiero solicitar información/cotización:\n- *Frente:* ${frente}\n- *Ubicación:* ${ubicacion}\n- *Plazo:* ${plazo}\n- *Contacto:* ${contactoCliente || 'No especificado'}\n- *Observaciones:* ${observaciones.trim() || 'Sin observaciones'}`;
+    const text = `Hola AndeInfra, quiero solicitar información:\n- *Nombre:* ${nombre || 'No especificado'}\n- *Empresa:* ${empresa || 'N/A'}\n- *Contacto:* ${contactoCliente || 'N/A'}\n- *Frente:* ${frente}\n- *Mensaje:* ${mensaje.trim() || 'Sin observaciones'}`;
     return `https://wa.me/56976563636?text=${encodeURIComponent(text)}`;
   };
 
@@ -161,7 +163,7 @@ export default function Page() {
     }
   ];
 
-  // 6 Capacidades Técnicas (Grid estático)
+  // 6 Capacidades Técnicas
   const capacidades = [
     {
       id: 'cap-1',
@@ -216,7 +218,7 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-[#142026] text-white font-['Inter',sans-serif] selection:bg-[#B96A37] selection:text-white flex flex-col">
       
-      {/* HEADER TOP BAR - STATUS TECHNICAL BANNER */}
+      {/* HEADER TOP BAR */}
       <div className="bg-[#2C4A57] border-b border-[#2C4A57]/60 text-xs text-[#ECE5D9] py-1.5 px-4 font-mono-tech">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
           <div className="flex items-center gap-3">
@@ -245,7 +247,7 @@ export default function Page() {
       <header className="sticky top-0 z-50 bg-[#142026]/95 backdrop-blur-md border-b border-[#2C4A57]/40 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Corporate Brand Logo oficial desde Brandbook (LIGERAMENTE MÁS GRANDE Y DESTACADO) */}
+          {/* Logo Oficial */}
           <a href="#" className="flex items-center group py-2">
             <img 
               src="/logo.png" 
@@ -254,7 +256,7 @@ export default function Page() {
             />
           </a>
 
-          {/* Navigation Links Desktop */}
+          {/* Menú Desktop */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
             <a href="#quienes-somos" className="text-[#ECE5D9]/80 hover:text-[#B96A37] transition-colors py-1">
               Quiénes Somos
@@ -273,7 +275,7 @@ export default function Page() {
             </a>
           </nav>
 
-          {/* CTA Direct to WhatsApp */}
+          {/* CTA WhatsApp */}
           <div className="hidden sm:flex items-center gap-3">
             <a
               href="https://wa.me/56976563636"
@@ -286,7 +288,7 @@ export default function Page() {
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Botón Menú Mobile */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 text-[#ECE5D9] hover:text-[#B96A37] focus:outline-none"
@@ -296,7 +298,7 @@ export default function Page() {
           </button>
         </div>
 
-        {/* Mobile Dropdown */}
+        {/* Dropdown Mobile */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-[#142026] border-b border-[#2C4A57] px-4 pt-2 pb-6 space-y-3 font-mono-tech text-sm">
             <a
@@ -350,15 +352,11 @@ export default function Page() {
 
       <main className="flex-grow">
         
-        {/* ==========================================
-            2. HERO SECTION (#142026 Grafito)
-        ========================================== */}
+        {/* HERO SECTION */}
         <section className="relative bg-[#142026] bg-cad-grid border-b border-[#2C4A57]/60 overflow-hidden py-16 sm:py-24 lg:py-28">
           
-          {/* SVG Topographic Lines Background Overlay */}
           <div className="absolute inset-0 pointer-events-none opacity-20 topo-lines"></div>
 
-          {/* Technical CAD Crosshairs & Dimension Lines */}
           <div className="absolute top-6 left-6 font-mono-tech text-[10px] text-[#2C4A57] tracking-widest hidden md:block">
             LAT: 29°54&apos;28&quot;S | LONG: 71°15&apos;15&quot;W | ELEV: 120m s.n.m.
           </div>
@@ -369,10 +367,8 @@ export default function Page() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
               
-              {/* Left Column Text Content */}
               <div className="lg:col-span-7 space-y-6">
                 
-                {/* Tag/Badge Superior en Cobre */}
                 <div className="inline-flex items-center gap-2 bg-[#2C4A57]/60 border border-[#B96A37]/50 px-3.5 py-1.5 text-xs font-mono-tech text-[#ECE5D9]">
                   <span className="w-2 h-2 bg-[#B96A37] rounded-full animate-ping"></span>
                   <span className="text-[#B96A37] font-bold">AndeInfra</span>
@@ -380,7 +376,6 @@ export default function Page() {
                   <span className="text-[#ECE5D9]/90">La Serena, Región de Coquimbo</span>
                 </div>
 
-                {/* Main Headline */}
                 <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
                   Solidez Cordillerana,<br />
                   <span className="text-[#B96A37] underline decoration-[#2C4A57] underline-offset-8">
@@ -388,12 +383,10 @@ export default function Page() {
                   </span>
                 </h1>
 
-                {/* Subtitle */}
                 <p className="text-lg sm:text-xl text-[#ECE5D9]/90 max-w-2xl leading-relaxed font-light">
                   Ejecutamos obras y prestamos servicios a mandantes públicos, mineros e industriales. Cada proyecto entregado en plazo, en norma y en terreno.
                 </p>
 
-                {/* Call To Action Buttons */}
                 <div className="pt-2 flex flex-col sm:flex-row gap-4">
                   <a
                     href="https://wa.me/56976563636"
@@ -415,7 +408,6 @@ export default function Page() {
                   </a>
                 </div>
 
-                {/* Quick Trust Attributes Pill Grid */}
                 <div className="pt-6 border-t border-[#2C4A57]/60 grid grid-cols-3 gap-3 text-center sm:text-left">
                   <div className="p-2 bg-[#2C4A57]/20 border border-[#2C4A57]/40">
                     <div className="text-xs font-mono-tech text-[#B96A37] font-bold">100% NORMA</div>
@@ -433,11 +425,9 @@ export default function Page() {
 
               </div>
 
-              {/* Right Column Geometric Technical Diagram */}
               <div className="lg:col-span-5 relative">
                 <div className="bg-[#2C4A57]/30 border-2 border-[#2C4A57] p-6 text-white tech-corner-box shadow-2xl relative overflow-hidden">
                   
-                  {/* CAD Diagram Header */}
                   <div className="flex justify-between items-center border-b border-[#2C4A57] pb-3 mb-4 font-mono-tech text-xs text-[#ECE5D9]/80">
                     <span className="flex items-center gap-1.5 text-[#B96A37]">
                       <Compass className="w-4 h-4" />
@@ -446,7 +436,6 @@ export default function Page() {
                     <span className="text-emerald-400 font-bold">VERIFICADO</span>
                   </div>
 
-                  {/* SVG Geometric Topographic Drawing */}
                   <div className="w-full h-64 relative bg-[#142026] border border-[#2C4A57] p-4 flex flex-col justify-between overflow-hidden">
                     <svg className="absolute inset-0 w-full h-full text-[#2C4A57]/40" xmlns="http://www.w3.org/2000/svg">
                       <defs>
@@ -503,9 +492,7 @@ export default function Page() {
         </section>
 
 
-        {/* ==========================================
-            3. QUIÉNES SOMOS & ATRIBUTOS CLAVE (#ECE5D9 Arena Contrast)
-        ========================================== */}
+        {/* QUIÉNES SOMOS */}
         <section id="quienes-somos" className="bg-[#ECE5D9] text-[#142026] py-16 sm:py-24 border-b border-[#2C4A57]/30 bg-cad-grid-arena relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
@@ -604,9 +591,7 @@ export default function Page() {
         </section>
 
 
-        {/* ==========================================
-            4. FRENTES DE NEGOCIO (#142026 Grafito / #2C4A57 Acero)
-        ========================================== */}
+        {/* FRENTES DE NEGOCIO */}
         <section id="frentes" className="bg-[#142026] py-16 sm:py-24 border-b border-[#2C4A57]/60 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
@@ -708,9 +693,7 @@ export default function Page() {
         </section>
 
 
-        {/* ==========================================
-            5. CAPACIDADES TÉCNICAS (Grilla Estática)
-        ========================================== */}
+        {/* CAPACIDADES TÉCNICAS */}
         <section id="capacidades" className="bg-[#142026] bg-cad-grid-dark py-16 sm:py-24 border-b border-[#2C4A57]/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
@@ -764,9 +747,7 @@ export default function Page() {
         </section>
 
 
-        {/* ==========================================
-            6. CÓMO TRABAJAMOS (Línea de Cota Topográfica)
-        ========================================== */}
+        {/* CÓMO TRABAJAMOS */}
         <section id="proceso" className="bg-[#2C4A57] text-white py-16 sm:py-24 border-b border-[#2C4A57]/60 relative overflow-hidden">
           
           <div className="absolute inset-0 pointer-events-none opacity-10 topo-lines"></div>
@@ -902,22 +883,20 @@ export default function Page() {
         </section>
 
 
-        {/* ==========================================
-            7. ESTIMADOR DE REQUERIMIENTOS TÉCNICOS (`id="estimador"`)
-        ========================================== */}
+        {/* FORMULARIO DE CONTACTO ACTUALIZADO (`id="estimador"`) */}
         <section id="estimador" className="bg-[#142026] bg-cad-grid py-16 sm:py-20 border-b border-[#2C4A57]/60">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-[#2C4A57]/50 border-2 border-[#2C4A57] p-8 tech-corner-box shadow-2xl">
               
               <div className="text-center mb-8">
                 <span className="font-mono-tech text-xs text-[#B96A37] font-bold tracking-widest uppercase">
-                  ESTIMADOR DE REQUERIMIENTOS TÉCNICOS
+                  FORMULARIO DE ATENCIÓN DIRECTA
                 </span>
                 <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white mt-1">
                   Cuéntanos Sobre tu Proyecto
                 </h3>
                 <p className="text-xs text-[#ECE5D9]/80 max-w-xl mx-auto mt-2">
-                  Selecciona los parámetros de tu requerimiento para coordinar una reunión o cotización directa con nuestro equipo de ingeniería.
+                  Completa tus datos para coordinar una reunión técnica o cotización directa con nuestro equipo de ingeniería.
                 </p>
               </div>
 
@@ -931,7 +910,7 @@ export default function Page() {
                     ¡Solicitud Recibida Con Éxito!
                   </h4>
                   <p className="text-xs text-[#ECE5D9]/80 max-w-md mx-auto leading-relaxed">
-                    Hemos enviado los detalles de tu requerimiento directamente a nuestra bandeja de ingeniería (<span className="text-[#B96A37]">contacto@andeinfra.cl</span>). Te responderemos a la brevedad.
+                    Hemos enviado tus datos directamente a nuestra bandeja de ingeniería (<span className="text-[#B96A37]">contacto@andeinfra.cl</span>). Te responderemos a la brevedad.
                   </p>
                   <button
                     type="button"
@@ -942,14 +921,60 @@ export default function Page() {
                   </button>
                 </div>
               ) : (
-                /* Formulario Web3Forms */
+                /* Formulario Web3Forms con Campos Comerciales */
                 <form onSubmit={handleWeb3FormsSubmit} className="space-y-6">
                   
+                  {/* Fila 1: Nombre, Empresa, Email o Teléfono */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     
                     <div>
                       <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                        1. Frente Principal:
+                        1. Nombre:
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        placeholder="Ej: Macarena Herrera"
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        2. Empresa:
+                      </label>
+                      <input
+                        type="text"
+                        value={empresa}
+                        onChange={(e) => setEmpresa(e.target.value)}
+                        placeholder="Ej: Inversiones Rebus SpA"
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        3. Email o Teléfono:
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={contactoCliente}
+                        onChange={(e) => setContactoCliente(e.target.value)}
+                        placeholder="Ej: contacto@empresa.cl o +56 9 ..."
+                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
+                      />
+                    </div>
+
+                  </div>
+
+                  {/* Fila 2: Frente del Proyecto + Mensaje */}
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
+                        4. Frente del Proyecto:
                       </label>
                       <select
                         value={frente}
@@ -965,59 +990,13 @@ export default function Page() {
 
                     <div>
                       <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                        2. Ubicación:
+                        5. Háblanos sobre tu proyecto:
                       </label>
-                      <select
-                        value={ubicacion}
-                        onChange={(e) => setUbicacion(e.target.value)}
-                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
-                      >
-                        <option value="La Serena - Coquimbo">La Serena - Coquimbo</option>
-                        <option value="Otras comunas Coquimbo">Otras comunas Coquimbo</option>
-                        <option value="Fuera de Región">Fuera de Región</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                        3. Plazo Estimado:
-                      </label>
-                      <select
-                        value={plazo}
-                        onChange={(e) => setPlazo(e.target.value)}
-                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37] font-mono-tech"
-                      >
-                        <option value="Inmediato (< 15 días)">Inmediato (&lt; 15 días)</option>
-                        <option value="30 días">30 días</option>
-                        <option value="Licitación a plazo">Licitación a plazo</option>
-                      </select>
-                    </div>
-
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                        4. Tu Email o Teléfono (Opcional):
-                      </label>
-                      <input
-                        type="text"
-                        value={contactoCliente}
-                        onChange={(e) => setContactoCliente(e.target.value)}
-                        placeholder="Ej: nombre@empresa.cl o +56 9 1234 5678"
-                        className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block font-mono-tech text-xs text-[#ECE5D9] mb-2 font-semibold">
-                        5. Observaciones (Opcional):
-                      </label>
-                      <input
-                        type="text"
-                        value={observaciones}
-                        onChange={(e) => setObservaciones(e.target.value)}
-                        placeholder="Ej: Requerimos movimiento de tierras para 5.000 m3..."
+                      <textarea
+                        rows={4}
+                        value={mensaje}
+                        onChange={(e) => setMensaje(e.target.value)}
+                        placeholder="Describe brevemente los requerimientos, ubicación o características de la obra..."
                         className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
                       />
                     </div>
@@ -1030,7 +1009,7 @@ export default function Page() {
                   )}
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
-                    {/* 1. Primary Orange/Copper Button: Web3Forms Submit */}
+                    {/* Botón Principal Email */}
                     <button
                       type="submit"
                       disabled={isSubmitting}
@@ -1050,7 +1029,7 @@ export default function Page() {
                       )}
                     </button>
 
-                    {/* 2. Secondary Black/Dark Button: WhatsApp Direct */}
+                    {/* Botón Secundario WhatsApp */}
                     <a
                       href={getWhatsAppUrl()}
                       target="_blank"
@@ -1070,15 +1049,12 @@ export default function Page() {
         </section>
 
 
-        {/* ==========================================
-            8. FOOTER & CANALES DE ATENCIÓN
-        ========================================== */}
+        {/* FOOTER */}
         <footer id="contacto" className="bg-[#142026] text-white py-16 sm:py-20 border-t border-[#2C4A57]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#2C4A57] items-center">
               
-              {/* Left Column: Corporate Brand Logo MUCHO MÁS GRANDE + Subtitle */}
               <div className="md:col-span-6 space-y-5">
                 <a href="#" className="inline-block">
                   <img 
@@ -1093,7 +1069,6 @@ export default function Page() {
                 </p>
               </div>
 
-              {/* Right Column: Two Main Action Buttons */}
               <div className="md:col-span-6 flex flex-col sm:flex-row gap-4 justify-start md:justify-end">
                 
                 <a
@@ -1132,7 +1107,6 @@ export default function Page() {
 
             </div>
 
-            {/* Bottom Bar */}
             <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono-tech text-[#ECE5D9]/60">
               <div>
                 © 2026 AndeInfra. Todos los derechos reservados.
