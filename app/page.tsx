@@ -408,16 +408,13 @@ export default function Page() {
                   </a>
                 </div>
 
-                <div className="pt-6 border-t border-[#2C4A57]/60 grid grid-cols-3 gap-3 text-center sm:text-left">
-                  <div className="p-2 bg-[#2C4A57]/20 border border-[#2C4A57]/40">
+                {/* Quick Trust Attributes Pill Grid (Ajustado a 2 columnas sin 'TERRENO') */}
+                <div className="pt-6 border-t border-[#2C4A57]/60 grid grid-cols-2 gap-4 text-center sm:text-left">
+                  <div className="p-3 bg-[#2C4A57]/20 border border-[#2C4A57]/40">
                     <div className="text-xs font-mono-tech text-[#B96A37] font-bold">100% NORMA</div>
                     <div className="text-[11px] text-[#ECE5D9]/70 mt-0.5">Licitaciones Públicas y Privadas</div>
                   </div>
-                  <div className="p-2 bg-[#2C4A57]/20 border border-[#2C4A57]/40">
-                    <div className="text-xs font-mono-tech text-[#B96A37] font-bold">TERRENO</div>
-                    <div className="text-[11px] text-[#ECE5D9]/70 mt-0.5">Cobertura Región de Coquimbo</div>
-                  </div>
-                  <div className="p-2 bg-[#2C4A57]/20 border border-[#2C4A57]/40">
+                  <div className="p-3 bg-[#2C4A57]/20 border border-[#2C4A57]/40">
                     <div className="text-xs font-mono-tech text-[#B96A37] font-bold">RESPALDO</div>
                     <div className="text-[11px] text-[#ECE5D9]/70 mt-0.5">Capacidad Operativa y Técnica</div>
                   </div>
@@ -883,7 +880,7 @@ export default function Page() {
         </section>
 
 
-        {/* FORMULARIO DE CONTACTO ACTUALIZADO (`id="estimador"`) */}
+        {/* FORMULARIO DE CONTACTO CON PLACEHOLDERS GENÉRICOS (`id="estimador"`) */}
         <section id="estimador" className="bg-[#142026] bg-cad-grid py-16 sm:py-20 border-b border-[#2C4A57]/60">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-[#2C4A57]/50 border-2 border-[#2C4A57] p-8 tech-corner-box shadow-2xl">
@@ -921,7 +918,7 @@ export default function Page() {
                   </button>
                 </div>
               ) : (
-                /* Formulario Web3Forms con Campos Comerciales */
+                /* Formulario Web3Forms con Placeholders Neutros */
                 <form onSubmit={handleWeb3FormsSubmit} className="space-y-6">
                   
                   {/* Fila 1: Nombre, Empresa, Email o Teléfono */}
@@ -936,7 +933,7 @@ export default function Page() {
                         required
                         value={nombre}
                         onChange={(e) => setNombre(e.target.value)}
-                        placeholder="Ej: Macarena Herrera"
+                        placeholder="Ej: Juan Pérez"
                         className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
                       />
                     </div>
@@ -949,7 +946,7 @@ export default function Page() {
                         type="text"
                         value={empresa}
                         onChange={(e) => setEmpresa(e.target.value)}
-                        placeholder="Ej: Inversiones Rebus SpA"
+                        placeholder="Ej: Empresa / Mandante SpA"
                         className="w-full bg-[#142026] border border-[#2C4A57] text-xs text-white p-3 focus:outline-none focus:border-[#B96A37]"
                       />
                     </div>
